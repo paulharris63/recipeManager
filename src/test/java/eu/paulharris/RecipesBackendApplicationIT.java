@@ -25,19 +25,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class RecipesBackendApplicationIT {
 
-    private static final String RECIPE_1_INGREDIENTS = "tomatoes, meat, basil";
-    private static final int RECIPE_1_NUMBER_OF_SERVINGS = 4;
-    private static final String RECIPE_1_NAME = "Sapgetti Bolognese";
-    private static final String RECIPE_1_UPDATEDNAME = "Sapgetti Bolognese Royale";
-    private static final String RECIPE_1_INSTRUCTIONS = "Cook everything in a pan";
+    private static final String RECIPE_1_NAME = "Spaghetti Bolognese";
     private static final boolean RECIPE_1_IS_VEGETARIAN = false;
+    private static final int RECIPE_1_NUMBER_OF_SERVINGS = 4;
+    private static final String RECIPE_1_INGREDIENTS = "tomatoes, meat, basil";
+    private static final String RECIPE_1_INSTRUCTIONS = "Cook everything in a pan";
+    private static final String RECIPE_1_UPDATED_NAME = RECIPE_1_NAME + " Royale";
     private static final String LINE_ENDING = System.getProperty("line.separator");
     public static final String RECIPE_1_EXPECTED_CONTENT = "{" + LINE_ENDING +
-            "  \"name\" : \"Sapgetti Bolognese\"," + LINE_ENDING +
-            "  \"servings\" : 4," + LINE_ENDING +
-            "  \"vegetarian\" : false," + LINE_ENDING +
-            "  \"ingredients\" : \"tomatoes, meat, basil\"," + LINE_ENDING +
-            "  \"instructions\" : \"Cook everything in a pan\"," + LINE_ENDING +
+            "  \"name\" : \"" + RECIPE_1_NAME + "\"," + LINE_ENDING +
+            "  \"servings\" : " + RECIPE_1_NUMBER_OF_SERVINGS + "," + LINE_ENDING +
+            "  \"vegetarian\" : " + RECIPE_1_IS_VEGETARIAN + "," + LINE_ENDING +
+            "  \"ingredients\" : \"" + RECIPE_1_INGREDIENTS + "\"," + LINE_ENDING +
+            "  \"instructions\" : \"" + RECIPE_1_INSTRUCTIONS + "\"," + LINE_ENDING +
             "  \"_links\" : {" + LINE_ENDING +
             "    \"self\" : {" + LINE_ENDING +
             "      \"href\" : \"http://localhost/recipes/1\"" + LINE_ENDING +
@@ -49,11 +49,11 @@ public class RecipesBackendApplicationIT {
             "}";
     public static final String RECIPE_1_EXPECTED_FLAT_CONTENT = "[{" +
             "\"id\":1," +
-            "\"name\":\"Sapgetti Bolognese\"," +
-            "\"servings\":4," +
-            "\"vegetarian\":false," +
-            "\"ingredients\":\"tomatoes, meat, basil\"," +
-            "\"instructions\":\"Cook everything in a pan\"}]";
+            "\"name\":\"" + RECIPE_1_NAME + "\"," +
+            "\"servings\":" + RECIPE_1_NUMBER_OF_SERVINGS + "," +
+            "\"vegetarian\":" + RECIPE_1_IS_VEGETARIAN + "," +
+            "\"ingredients\":\"" + RECIPE_1_INGREDIENTS + "\"," +
+            "\"instructions\":\"" + RECIPE_1_INSTRUCTIONS + "\"}]";
     @Autowired
     private MockMvc mockMvc;
 
@@ -64,12 +64,12 @@ public class RecipesBackendApplicationIT {
     private RecipeRepository recipeRepository;
 
     @Test
-    void registrationWorksThroughAllLayers() throws Exception {
+    void testAllCRUDoperations() throws Exception {
         addFirstRecipe();
         getFirstRecipe();
         queryFirstRecipe();
         updateFirstRecipe();
-        deleteFirestRecipe();
+        deleteFirstRecipe();
         confirmDatabaseEmpty();
     }
 
@@ -78,20 +78,20 @@ public class RecipesBackendApplicationIT {
         assertEquals(0, recipes.size());
     }
 
-    private void deleteFirestRecipe() throws Exception {
+    private void deleteFirstRecipe() throws Exception {
         mockMvc.perform(delete("/recipes/1"))
                 .andExpect(status().isNoContent());
     }
 
     private void updateFirstRecipe() throws Exception {
-        Recipe recipeToUpdate = new Recipe(RECIPE_1_UPDATEDNAME, RECIPE_1_NUMBER_OF_SERVINGS, RECIPE_1_IS_VEGETARIAN, RECIPE_1_INGREDIENTS, RECIPE_1_INSTRUCTIONS);
+        Recipe recipeToUpdate = new Recipe(RECIPE_1_UPDATED_NAME, RECIPE_1_NUMBER_OF_SERVINGS, RECIPE_1_IS_VEGETARIAN, RECIPE_1_INGREDIENTS, RECIPE_1_INSTRUCTIONS);
         mockMvc.perform(put("/recipes/1")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(recipeToUpdate)))
                 .andExpect(status().isNoContent());
         List<Recipe> recipes = recipeRepository.findByName(RECIPE_1_NAME);
         assertEquals(0, recipes.size());
-        recipes = recipeRepository.findByName(RECIPE_1_UPDATEDNAME);
+        recipes = recipeRepository.findByName(RECIPE_1_UPDATED_NAME);
         assertEquals(1, recipes.size());
         assertEquals(RECIPE_1_NUMBER_OF_SERVINGS, recipes.get(0).getServings());
         assertEquals(RECIPE_1_IS_VEGETARIAN, recipes.get(0).isVegetarian());

@@ -18,3 +18,7 @@ spring:
         format_sql: true
   h2:
     console.enabled: true
+
+logging:
+  level:
+    eu.paulharris: info

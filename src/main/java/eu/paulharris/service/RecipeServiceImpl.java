@@ -4,6 +4,7 @@ import eu.paulharris.domain.Recipe;
 import eu.paulharris.domain.RecipeRepository;
 import eu.paulharris.domain.SearchCriteria;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RecipeServiceImpl implements RecipeService {
 
     private final RecipeRepository recipeRepository;
@@ -24,7 +26,9 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     private static Predicate<Recipe> filterPredicate(SearchCriteria searchCriteria) {
-        return recipe -> (searchCriteria.getVegetarian() == null || recipe.isVegetarian() == searchCriteria.getVegetarian()) &&
+        log.debug("Search criteria : {}", searchCriteria.log());
+        return recipe ->
+                (searchCriteria.getVegetarian() == null || recipe.isVegetarian() == searchCriteria.getVegetarian()) &&
                 (searchCriteria.getServings() == null || recipe.getServings() == searchCriteria.getServings()) &&
                 (searchCriteria.getIncludeIngredients() == null || recipe.getIngredients().toLowerCase().contains(searchCriteria.getIncludeIngredients().toLowerCase())) &&
                 (searchCriteria.getExcludeIngredients() == null || !recipe.getIngredients().toLowerCase().contains(searchCriteria.getExcludeIngredients().toLowerCase())) &&

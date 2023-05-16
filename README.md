@@ -57,11 +57,30 @@ Desireable items to do (outside scope but desirable):
 - If this were being built and deployed in a CI/CD pipeline I would remove most of the configuration from the application.yaml file and put it in environment variables.
 - Impose unique constraint on database entry
 - Refactor RecipeService to fetch smaller data sets.
+- Rewrite acceptance test as JGiven test
 
 ## Local test commands
+Create some database entries:
+```
+curl -X POST http://localhost:9777/recipes -H "Content-Type: application/json" -d '{"id":null,"name":"Non-vegetarian recipe","servings":4,"vegetarian":false,"ingredients":"Meat, Potatoes","instructions":"Put in Oven"}'
+curl -X POST http://localhost:9777/recipes -H "Content-Type: application/json" -d '{"id":null,"name":"Vegetarian recipe","servings":1,"vegetarian":true,"ingredients":"fruit and vegetables","instructions":"Peel and cook in pan"}'
+```
+Update some database entries:
+(In the following commands the IDs will need to be updated if this is not a clean database.)
+```
+curl -X PUT http://localhost:9777/recipes/1 -H "Content-Type: application/json" -d '{"id":null,"name":"Non-vegetarian recipe","servings":6,"vegetarian":false,"ingredients":"Meat, Potatoes","instructions":"Put in Oven"}'
+curl -X PUT http://localhost:9777/recipes/2 -H "Content-Type: application/json" -d '{"id":null,"name":"Vegetarian recipe","servings":2,"vegetarian":true,"ingredients":"fruit and vegetables","instructions":"Peel and cook in pan"}'
+```
+Perform the acceptance queries:
 ```
 curl http://localhost:9777/recipes/query
-curl http://localhost:9777/recipes/query?vegetarian=false&servings=4
-curl -X POST http://localhost:9777/recipes -H "Content-Type: application/json" -d '{"id":null,"name":"Non-vegetarian recipe","servings":4,"vegetarian":false,"ingredients":"meat and more meat","instructions":"instructions"}'
-curl -X POST http://localhost:9777/recipes -H "Content-Type: application/json" -d '{"id":null,"name":"Vegetarian recipe","servings":1,"vegetarian":true,"ingredients":"fruit and vegetables","instructions":"instructions"}'
+curl 'http://localhost:9777/recipes/query?vegetarian=true'
+curl 'http://localhost:9777/recipes/query?servings=4&include-ingredients=potatoes'
+curl 'http://localhost:9777/recipes/query?exclude-ingredients=salmon&include-instructions=oven'
+
+```
+Remove the database entries: (In the following commands the IDs will need to be updated if this is not a clean database.)
+```
+curl -X DELETE http://localhost:9777/recipes/1
+curl -X DELETE http://localhost:9777/recipes/2
 ```
