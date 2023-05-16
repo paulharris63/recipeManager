@@ -26,7 +26,6 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     private static Predicate<Recipe> filterPredicate(SearchCriteria searchCriteria) {
-        log.debug("Search criteria : {}", searchCriteria.log());
         return recipe ->
                 (searchCriteria.getVegetarian() == null || recipe.isVegetarian() == searchCriteria.getVegetarian()) &&
                 (searchCriteria.getServings() == null || recipe.getServings() == searchCriteria.getServings()) &&

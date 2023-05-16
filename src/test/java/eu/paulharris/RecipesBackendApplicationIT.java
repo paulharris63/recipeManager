@@ -54,6 +54,9 @@ public class RecipesBackendApplicationIT {
             "\"vegetarian\":" + RECIPE_1_IS_VEGETARIAN + "," +
             "\"ingredients\":\"" + RECIPE_1_INGREDIENTS + "\"," +
             "\"instructions\":\"" + RECIPE_1_INSTRUCTIONS + "\"}]";
+    private static final String QUERY_1_EXPECTED_CONTENT = "[{\"id\":2,\"name\":\"Vegetarian recipe\",\"servings\":2,\"vegetarian\":true,\"ingredients\":\"Vegetables\",\"instructions\":\"Peel and cook in pan\"}]";
+    private static final String QUERY_2_EXPECTED_CONTENT = "[{\"id\":3,\"name\":\"Meaty recipe\",\"servings\":4,\"vegetarian\":false,\"ingredients\":\"Meat, Potatoes\",\"instructions\":\"Put in Oven\"}]";
+    private static final String QUERY_3_EXPECTED_CONTENT = "[{\"id\":3,\"name\":\"Meaty recipe\",\"servings\":4,\"vegetarian\":false,\"ingredients\":\"Meat, Potatoes\",\"instructions\":\"Put in Oven\"}]";
     @Autowired
     private MockMvc mockMvc;
 
@@ -71,6 +74,7 @@ public class RecipesBackendApplicationIT {
         updateFirstRecipe();
         deleteFirstRecipe();
         confirmDatabaseEmpty();
+        performAcceptanceTests();
     }
 
     private void confirmDatabaseEmpty() {
@@ -125,4 +129,25 @@ public class RecipesBackendApplicationIT {
         assertEquals(RECIPE_1_INGREDIENTS, recipes.get(0).getIngredients());
         assertEquals(RECIPE_1_INSTRUCTIONS, recipes.get(0).getInstructions());
     }
+
+    private void performAcceptanceTests() throws Exception {
+        Recipe recipe1 = new Recipe("Vegetarian recipe", 2, true, "Vegetables", "Peel and cook in pan");
+        recipeRepository.save(recipe1);
+        Recipe recipe2 = new Recipe("Meaty recipe", 4, false, "Meat, Potatoes", "Put in Oven");
+        recipeRepository.save(recipe2);
+        mockMvc.perform(get("/recipes/query").param("vegetarian", "true"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(QUERY_1_EXPECTED_CONTENT));
+        mockMvc.perform(get("/recipes/query")
+                        .param("servings", "4")
+                        .param("include-ingredients", "potatoes"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(QUERY_2_EXPECTED_CONTENT));
+        mockMvc.perform(get("/recipes/query")
+                        .param("exclude-ingredients", "salmon")
+                        .param("include-instructions", "oven"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(QUERY_3_EXPECTED_CONTENT));
+    }
+
 }

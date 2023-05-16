@@ -58,6 +58,7 @@ Desireable items to do (outside scope but desirable):
 - Impose unique constraint on database entry
 - Refactor RecipeService to fetch smaller data sets.
 - Rewrite acceptance test as JGiven test
+- Refactor integration tests so that the database ID are not significant. Then several IT files can be created. Currently the IDs are dependent upon what database actions have been performed in other ITs on the in memory database. The quick fix is to put all ITs ina single file.
 
 ## Local test commands
 Create some database entries:
