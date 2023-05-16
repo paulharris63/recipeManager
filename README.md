@@ -1,7 +1,7 @@
 # Recipe REST backend application
 
 ## Architectural choices
-The application uses Spring boot to minimise boilerplate code for the REST controlers. For the same reason Spring Boot Data JPA/REST has been chosen for the persitence payer which removes boilerplate code for CRUD access to the database. The only bespoke code is the query filter. This has been designed so that the complete database is fetched and the filtering is done within the Recipe service. This would not scale well if the database were expected to become too large. If the database size were to become too large then the findAll method could be adapted to findBy a particular condition to reduce the database fetch size and then filtering could be applied to this smaller data set. The change would be confined to the Service class. 
+The application uses Spring boot to minimise boilerplate code for the REST controllers. For the same reason Spring Boot Data JPA/REST has been chosen for the persistence payer which removes boilerplate code for CRUD access to the database. The only bespoke code is the query filter. This has been designed so that the complete database is fetched and the filtering is done within the Recipe service. This would not scale well if the database were expected to become too large. If the database size were to become too large then the findAll method could be adapted to findBy a particular condition to reduce the database fetch size and then filtering could be applied to this smaller data set. The change would be confined to the Service class. 
 
 ## java version
 The project is built against Java 11.
@@ -58,7 +58,7 @@ Desireable items to do (outside scope but desirable):
 - Impose unique constraint on database entry
 - Refactor RecipeService to fetch smaller data sets.
 - Rewrite acceptance test as JGiven test
-- Refactor integration tests so that the database ID are not significant. Then several IT files can be created. Currently the IDs are dependent upon what database actions have been performed in other ITs on the in memory database. The quick fix is to put all ITs ina single file.
+- Refactor integration tests so that the database ID are not significant. Then multiple IT files can be created. Currently, the IDs are dependent upon what database actions have been performed in other ITs on the in memory database. The quick fix is to put all ITs ina single file.
 
 ## Local test commands
 Create some database entries:
