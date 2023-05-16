@@ -55,7 +55,6 @@ curl http://localhost:9777/recipes/query
 curl 'http://localhost:9777/recipes/query?vegetarian=true'
 curl 'http://localhost:9777/recipes/query?servings=4&include-ingredients=potatoes'
 curl 'http://localhost:9777/recipes/query?exclude-ingredients=salmon&include-instructions=oven'
-
 ```
 Remove the database entries: (In the following commands the IDs will need to be updated if this is not a clean database.)
 ```
