@@ -10,6 +10,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -21,8 +22,8 @@ class RecipeControllerTest {
     @Test
     void queryRecipe() {
         List<Recipe> recipes = Collections.singletonList(RECIPE);
-        when(recipeService.queryRecipe()).thenReturn(recipes);
-        ResponseEntity<List<Recipe>> response = recipeController.queryRecipe();
+        when(recipeService.queryRecipe(any())).thenReturn(recipes);
+        ResponseEntity<List<Recipe>> response = recipeController.queryRecipe(true, 4, "", "", "", "");
         assertEquals(200, response.getStatusCodeValue());
         assertNotNull(response.getBody());
         assertEquals(1, response.getBody().size());

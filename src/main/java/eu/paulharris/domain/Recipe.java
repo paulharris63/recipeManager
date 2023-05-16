@@ -20,18 +20,18 @@ public class Recipe {
     @GeneratedValue
     private Long id;
     private String name;
-    private int numberOfServings;
+    private int servings;
     private boolean vegetarian;
     private String ingredients;
     private String instructions;
 
     public Recipe(String name,
-                  int numberOfServings,
+                  int servings,
                   boolean vegetarian,
                   String ingredients,
                   String instructions) {
         this.name = name;
-        this.numberOfServings = numberOfServings;
+        this.servings = servings;
         this.vegetarian = vegetarian;
         this.ingredients = ingredients;
         this.instructions = instructions;

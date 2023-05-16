@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class RecipesBackendApplicationTest {
+public class RecipesBackendApplicationIT {
 
     private static final String RECIPE_1_INGREDIENTS = "tomatoes, meat, basil";
     private static final int RECIPE_1_NUMBER_OF_SERVINGS = 4;
@@ -34,7 +34,7 @@ public class RecipesBackendApplicationTest {
     private static final String LINE_ENDING = System.getProperty("line.separator");
     public static final String RECIPE_1_EXPECTED_CONTENT = "{" + LINE_ENDING +
             "  \"name\" : \"Sapgetti Bolognese\"," + LINE_ENDING +
-            "  \"numberOfServings\" : 4," + LINE_ENDING +
+            "  \"servings\" : 4," + LINE_ENDING +
             "  \"vegetarian\" : false," + LINE_ENDING +
             "  \"ingredients\" : \"tomatoes, meat, basil\"," + LINE_ENDING +
             "  \"instructions\" : \"Cook everything in a pan\"," + LINE_ENDING +
@@ -47,6 +47,13 @@ public class RecipesBackendApplicationTest {
             "    }" + LINE_ENDING +
             "  }" + LINE_ENDING +
             "}";
+    public static final String RECIPE_1_EXPECTED_FLAT_CONTENT = "[{" +
+            "\"id\":1," +
+            "\"name\":\"Sapgetti Bolognese\"," +
+            "\"servings\":4," +
+            "\"vegetarian\":false," +
+            "\"ingredients\":\"tomatoes, meat, basil\"," +
+            "\"instructions\":\"Cook everything in a pan\"}]";
     @Autowired
     private MockMvc mockMvc;
 
@@ -60,6 +67,7 @@ public class RecipesBackendApplicationTest {
     void registrationWorksThroughAllLayers() throws Exception {
         addFirstRecipe();
         getFirstRecipe();
+        queryFirstRecipe();
         updateFirstRecipe();
         deleteFirestRecipe();
         confirmDatabaseEmpty();
@@ -85,7 +93,7 @@ public class RecipesBackendApplicationTest {
         assertEquals(0, recipes.size());
         recipes = recipeRepository.findByName(RECIPE_1_UPDATEDNAME);
         assertEquals(1, recipes.size());
-        assertEquals(RECIPE_1_NUMBER_OF_SERVINGS, recipes.get(0).getNumberOfServings());
+        assertEquals(RECIPE_1_NUMBER_OF_SERVINGS, recipes.get(0).getServings());
         assertEquals(RECIPE_1_IS_VEGETARIAN, recipes.get(0).isVegetarian());
         assertEquals(RECIPE_1_INGREDIENTS, recipes.get(0).getIngredients());
         assertEquals(RECIPE_1_INSTRUCTIONS, recipes.get(0).getInstructions());
@@ -97,6 +105,12 @@ public class RecipesBackendApplicationTest {
                 .andExpect(content().string(RECIPE_1_EXPECTED_CONTENT));
     }
 
+    private void queryFirstRecipe() throws Exception {
+        mockMvc.perform(get("/recipes/query?servings=4"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(RECIPE_1_EXPECTED_FLAT_CONTENT));
+    }
+
     private void addFirstRecipe() throws Exception {
         Recipe recipeToAdd = new Recipe(RECIPE_1_NAME, RECIPE_1_NUMBER_OF_SERVINGS, RECIPE_1_IS_VEGETARIAN, RECIPE_1_INGREDIENTS, RECIPE_1_INSTRUCTIONS);
         mockMvc.perform(post("/recipes")
@@ -106,7 +120,7 @@ public class RecipesBackendApplicationTest {
 
         List<Recipe> recipes = recipeRepository.findByName(RECIPE_1_NAME);
         assertEquals(1, recipes.size());
-        assertEquals(RECIPE_1_NUMBER_OF_SERVINGS, recipes.get(0).getNumberOfServings());
+        assertEquals(RECIPE_1_NUMBER_OF_SERVINGS, recipes.get(0).getServings());
         assertEquals(RECIPE_1_IS_VEGETARIAN, recipes.get(0).isVegetarian());
         assertEquals(RECIPE_1_INGREDIENTS, recipes.get(0).getIngredients());
         assertEquals(RECIPE_1_INSTRUCTIONS, recipes.get(0).getInstructions());
