@@ -25,13 +25,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class RecipesBackendApplicationTest {
 
-    public static final String RECIPE_1_INGREDIENTS = "tomatoes, meat, basil";
-    public static final int RECIPE_1_NUMBER_OF_SERVINGS = 4;
-    public static final String RECIPE_1_NAME = "Sapgetti Bolognese";
-    public static final String RECIPE_1_UPDATEDNAME = "Sapgetti Bolognese Royale";
-    public static final String RECIPE_1_INSTRUCTIONS = "Cook everything in a pan";
-    public static final boolean RECIPE_1_IS_VEGETARIAN = false;
-
+    private static final String RECIPE_1_INGREDIENTS = "tomatoes, meat, basil";
+    private static final int RECIPE_1_NUMBER_OF_SERVINGS = 4;
+    private static final String RECIPE_1_NAME = "Sapgetti Bolognese";
+    private static final String RECIPE_1_UPDATEDNAME = "Sapgetti Bolognese Royale";
+    private static final String RECIPE_1_INSTRUCTIONS = "Cook everything in a pan";
+    private static final boolean RECIPE_1_IS_VEGETARIAN = false;
     private static final String LINE_ENDING = System.getProperty("line.separator");
     public static final String RECIPE_1_EXPECTED_CONTENT = "{" + LINE_ENDING +
             "  \"name\" : \"Sapgetti Bolognese\"," + LINE_ENDING +
